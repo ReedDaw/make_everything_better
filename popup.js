@@ -55,25 +55,24 @@ const animals = {
       return data.image;
     }
   },
-  redpanda: {
-    emoji: '🐼',
+  duck: {
+    emoji: '🦆',
     captions: [
-      "Red pandas are just vibes.",
-      "Nature said: here's a gift.",
-      "You unlocked a rare one.",
-      "Objectively the best animal.",
+      "Quack.",
+      "Duck energy: activated.",
+      "Nature's most underrated animal.",
+      "This duck has its life together.",
       "Stress level: approaching zero.",
     ],
     fetch: async () => {
-      // Red Panda API — free, no auth needed
-      const res = await fetch('https://some-random-api.com/animal/red_panda');
+      const res = await fetch('https://random-d.uk/api/random');
       const data = await res.json();
-      return data.image;
+      return data.url;
     }
   }
 };
 
-const allAnimalKeys = ['dog', 'cat', 'fox', 'redpanda'];
+const allAnimalKeys = ['dog', 'cat', 'fox', 'duck'];
 
 // --- UI helpers ---
 function setPlaceholder(emoji) {
