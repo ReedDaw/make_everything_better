@@ -1,0 +1,11 @@
+{
+  "manifest_version": 3,
+  "name": "Make Everything Better Button",
+  "version": "1.0",
+  "description": "Click for an instant puppy. You're welcome.",
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Make Everything Better"
+  },
+  "permissions": []
+}
