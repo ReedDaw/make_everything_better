@@ -24,7 +24,45 @@
       text-align: center;
     }
 
-    #puppy-container {
+    #animal-selector {
+      display: flex;
+      gap: 6px;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .animal-btn {
+      flex: 1;
+      padding: 8px 4px;
+      border: 2px solid #e8e0d8;
+      border-radius: 10px;
+      background: white;
+      font-size: 11px;
+      font-weight: 600;
+      color: #888;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-align: center;
+    }
+
+    .animal-btn:hover {
+      border-color: #ff6b6b;
+      color: #ff6b6b;
+    }
+
+    .animal-btn.active {
+      border-color: #ff6b6b;
+      background: #ff6b6b;
+      color: white;
+    }
+
+    .animal-btn .emoji {
+      display: block;
+      font-size: 16px;
+      margin-bottom: 2px;
+    }
+
+    #animal-container {
       width: 280px;
       height: 280px;
       border-radius: 16px;
@@ -36,7 +74,7 @@
       position: relative;
     }
 
-    #puppy-img {
+    #animal-img {
       width: 100%;
       height: 100%;
       object-fit: cover;
@@ -56,7 +94,7 @@
       position: absolute;
     }
 
-    #puppy-button {
+    #fetch-button {
       background: #ff6b6b;
       color: white;
       border: none;
@@ -67,15 +105,22 @@
       cursor: pointer;
       transition: transform 0.1s ease, background 0.2s ease;
       box-shadow: 0 4px 12px rgba(255, 107, 107, 0.35);
+      width: 100%;
     }
 
-    #puppy-button:hover {
+    #fetch-button:hover {
       background: #ff5252;
       transform: scale(1.03);
     }
 
-    #puppy-button:active {
+    #fetch-button:active {
       transform: scale(0.97);
+    }
+
+    #fetch-button:disabled {
+      opacity: 0.6;
+      transform: none;
+      cursor: default;
     }
 
     #caption {
@@ -90,13 +135,31 @@
 
   <h1>Make Everything Better</h1>
 
-  <div id="puppy-container">
-    <span id="placeholder">🐶</span>
-    <span id="loading">fetching doggo...</span>
-    <img id="puppy-img" alt="A very good puppy" />
+  <div id="animal-selector">
+    <button class="animal-btn active" data-animal="dog">
+      <span class="emoji">🐶</span>Dog
+    </button>
+    <button class="animal-btn" data-animal="cat">
+      <span class="emoji">🐱</span>Cat
+    </button>
+    <button class="animal-btn" data-animal="fox">
+      <span class="emoji">🦊</span>Fox
+    </button>
+    <button class="animal-btn" data-animal="redpanda">
+      <span class="emoji">🐼</span>Red Panda
+    </button>
+    <button class="animal-btn" data-animal="surprise">
+      <span class="emoji">🎲</span>Surprise
+    </button>
   </div>
 
-  <button id="puppy-button">🐾 Give Me a Puppy</button>
+  <div id="animal-container">
+    <span id="placeholder">🐶</span>
+    <span id="loading">fetching cuteness...</span>
+    <img id="animal-img" alt="A very cute animal" />
+  </div>
+
+  <button id="fetch-button">🐾 Give Me Cute</button>
 
   <p id="caption"></p>
 
