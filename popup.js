@@ -212,7 +212,7 @@ async function fetchQuote() {
   showQuoteLoading();
   try {
     // quotable.io — free, no auth, reliable
-    const res = await fetch('https://api.quotable.io/random');
+    const res = await fetch('https://api.quotable.io/quotes/random');
     const data = await res.json();
     quoteLoading.style.display = 'none';
     quoteText.textContent = `"${data.content}"`;
