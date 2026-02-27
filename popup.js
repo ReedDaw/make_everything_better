@@ -211,12 +211,13 @@ function showQuoteError() {
 async function fetchQuote() {
   showQuoteLoading();
   try {
-    // quotable.io — free, no auth, reliable
-    const res = await fetch('https://api.quotable.io/quotes/random');
+    // type.fit — returns a large static array of quotes, very reliable
+    const res = await fetch('https://type.fit/api/quotes');
     const data = await res.json();
+    const quote = data[Math.floor(Math.random() * data.length)];
     quoteLoading.style.display = 'none';
-    quoteText.textContent = `"${data.content}"`;
-    quoteAuthor.textContent = `— ${data.author}`;
+    quoteText.textContent = `"${quote.text}"`;
+    quoteAuthor.textContent = quote.author ? `— ${quote.author}` : '';
     quoteBtn.disabled = false;
     quoteCaption.textContent = quoteReactions[Math.floor(Math.random() * quoteReactions.length)];
   } catch (err) {
