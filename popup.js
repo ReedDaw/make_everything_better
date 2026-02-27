@@ -1,13 +1,28 @@
-const fetchButton = document.getElementById('fetch-button');
-const img = document.getElementById('animal-img');
-const placeholder = document.getElementById('placeholder');
-const loading = document.getElementById('loading');
-const caption = document.getElementById('caption');
-const animalButtons = document.querySelectorAll('.animal-btn');
+// ─── Element refs ───────────────────────────────────────────
+const togglePill       = document.getElementById('toggle-pill');
+const modeOptions      = document.querySelectorAll('.mode-option');
+const panels           = document.querySelectorAll('.panel');
 
+// Animals
+const animalButtons    = document.querySelectorAll('.animal-btn');
+const animalImg        = document.getElementById('animal-img');
+const placeholder      = document.getElementById('placeholder');
+const animalLoading    = document.getElementById('animal-loading');
+const animalBtn        = document.getElementById('animal-btn');
+const animalCaption    = document.getElementById('animal-caption');
+
+// Quotes
+const quoteText        = document.getElementById('quote-text');
+const quoteAuthor      = document.getElementById('quote-author');
+const quoteLoading     = document.getElementById('quote-loading');
+const quoteBtn         = document.getElementById('quote-btn');
+const quoteCaption     = document.getElementById('quote-caption');
+
+// ─── State ──────────────────────────────────────────────────
+let currentMode   = 'animals';
 let currentAnimal = 'dog';
 
-// --- Animal config ---
+// ─── Animal config ──────────────────────────────────────────
 const animals = {
   dog: {
     emoji: '🐶',
@@ -73,83 +88,153 @@ const animals = {
 
 const allAnimalKeys = ['dog', 'cat', 'fox', 'lizard'];
 
-// --- UI helpers ---
+// ─── Mode toggle ─────────────────────────────────────────────
+function switchMode(mode) {
+  currentMode = mode;
+
+  // Move pill
+  togglePill.classList.toggle('quotes', mode === 'quotes');
+
+  // Update tab labels
+  modeOptions.forEach(opt => {
+    opt.classList.toggle('active', opt.dataset.mode === mode);
+  });
+
+  // Show correct panel
+  panels.forEach(panel => {
+    panel.classList.toggle('active', panel.id === `panel-${mode}`);
+  });
+
+  // Save to storage
+  chrome.storage.local.set({ lastMode: mode });
+
+  // Auto-fetch if switching to quotes and box is empty
+  if (mode === 'quotes' && quoteText.textContent === '') {
+    fetchQuote();
+  }
+}
+
+modeOptions.forEach(opt => {
+  opt.addEventListener('click', () => switchMode(opt.dataset.mode));
+});
+
+// ─── Animal fetching ─────────────────────────────────────────
 function setPlaceholder(emoji) {
   placeholder.textContent = emoji;
   placeholder.style.display = 'block';
-  img.style.display = 'none';
+  animalImg.style.display = 'none';
 }
 
-function showLoading() {
+function showAnimalLoading() {
   placeholder.style.display = 'none';
-  img.style.display = 'none';
-  loading.style.display = 'block';
-  fetchButton.disabled = true;
-  caption.textContent = '';
+  animalImg.style.display = 'none';
+  animalLoading.style.display = 'block';
+  animalBtn.disabled = true;
+  animalCaption.textContent = '';
 }
 
-function showImage(src) {
-  img.src = src;
-  img.style.display = 'block';
-  loading.style.display = 'none';
-  fetchButton.disabled = false;
-  fetchButton.textContent = '🐾 Another One';
+function showAnimalImage(src) {
+  animalImg.src = src;
+  animalImg.style.display = 'block';
+  animalLoading.style.display = 'none';
+  animalBtn.disabled = false;
+  animalBtn.textContent = '🐾 Another One';
 }
 
-function showError() {
-  loading.style.display = 'none';
+function showAnimalError() {
+  animalLoading.style.display = 'none';
   placeholder.style.display = 'block';
   placeholder.textContent = '😢';
-  caption.textContent = 'No wifi? Even cute animals need internet.';
-  fetchButton.disabled = false;
+  animalCaption.textContent = 'No wifi? Even cute animals need internet.';
+  animalBtn.disabled = false;
 }
 
-function pickCaption(animalKey) {
-  const list = animals[animalKey].captions;
-  return list[Math.floor(Math.random() * list.length)];
-}
-
-// --- Fetch logic ---
 async function fetchAnimal() {
   const animalKey = currentAnimal === 'surprise'
     ? allAnimalKeys[Math.floor(Math.random() * allAnimalKeys.length)]
     : currentAnimal;
 
-  showLoading();
+  showAnimalLoading();
 
   try {
     const url = await animals[animalKey].fetch();
-
     const newImg = new Image();
     newImg.onload = () => {
-      showImage(url);
-      caption.textContent = pickCaption(animalKey);
+      showAnimalImage(url);
+      const captions = animals[animalKey].captions;
+      animalCaption.textContent = captions[Math.floor(Math.random() * captions.length)];
     };
-    newImg.onerror = showError;
+    newImg.onerror = showAnimalError;
     newImg.src = url;
   } catch (err) {
-    showError();
+    showAnimalError();
   }
 }
 
-// --- Animal selector buttons ---
 animalButtons.forEach(btn => {
   btn.addEventListener('click', () => {
     animalButtons.forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     currentAnimal = btn.dataset.animal;
-
-    if (currentAnimal === 'surprise') {
-      setPlaceholder('🎲');
-    } else {
-      setPlaceholder(animals[currentAnimal].emoji);
-    }
-
+    setPlaceholder(currentAnimal === 'surprise' ? '🎲' : animals[currentAnimal]?.emoji);
     fetchAnimal();
   });
 });
 
-fetchButton.addEventListener('click', fetchAnimal);
+animalBtn.addEventListener('click', fetchAnimal);
 
-// Auto-load on open
-fetchAnimal();
+// ─── Quote fetching ──────────────────────────────────────────
+const quoteReactions = [
+  "Sit with that for a moment.",
+  "Ok that one hit.",
+  "Saving that one.",
+  "Your future self needed to hear this.",
+  "Someone really figured something out.",
+];
+
+function showQuoteLoading() {
+  quoteLoading.style.display = 'block';
+  quoteText.textContent = '';
+  quoteAuthor.textContent = '';
+  quoteBtn.disabled = true;
+  quoteCaption.textContent = '';
+}
+
+function showQuoteError() {
+  quoteLoading.style.display = 'none';
+  quoteText.textContent = 'Could not load a quote right now.';
+  quoteAuthor.textContent = '';
+  quoteCaption.textContent = 'Check your connection and try again.';
+  quoteBtn.disabled = false;
+}
+
+async function fetchQuote() {
+  showQuoteLoading();
+  try {
+    // quotable.io — free, no auth, reliable
+    const res = await fetch('https://api.quotable.io/random');
+    const data = await res.json();
+    quoteLoading.style.display = 'none';
+    quoteText.textContent = `"${data.content}"`;
+    quoteAuthor.textContent = `— ${data.author}`;
+    quoteBtn.disabled = false;
+    quoteCaption.textContent = quoteReactions[Math.floor(Math.random() * quoteReactions.length)];
+  } catch (err) {
+    showQuoteError();
+  }
+}
+
+quoteBtn.addEventListener('click', fetchQuote);
+
+// ─── Init: restore last mode from storage ───────────────────
+chrome.storage.local.get('lastMode', (result) => {
+  const savedMode = result.lastMode || 'animals';
+  switchMode(savedMode);
+
+  // Always auto-fetch on open for whichever panel is shown
+  if (savedMode === 'animals') {
+    fetchAnimal();
+  } else {
+    fetchQuote();
+  }
+});
