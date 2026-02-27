@@ -8,7 +8,6 @@ const animalButtons = document.querySelectorAll('.animal-btn');
 let currentAnimal = 'dog';
 
 // --- Animal config ---
-// Each animal has an emoji, a fetch function, and captions
 const animals = {
   dog: {
     emoji: '🐶',
@@ -55,24 +54,24 @@ const animals = {
       return data.image;
     }
   },
-  duck: {
-    emoji: '🦆',
+  lizard: {
+    emoji: '🦎',
     captions: [
-      "Quack.",
-      "Duck energy: activated.",
-      "Nature's most underrated animal.",
-      "This duck has its life together.",
-      "Stress level: approaching zero.",
+      "Lizard mode: activated.",
+      "Cold blooded. Just like your deadlines.",
+      "This lizard has no meetings today.",
+      "Chaotic neutral energy.",
+      "Nature's little weirdo. Iconic.",
     ],
     fetch: async () => {
-      const res = await fetch('https://random-d.uk/api/random');
+      const res = await fetch('https://nekos.life/api/v2/img/lizard');
       const data = await res.json();
       return data.url;
     }
   }
 };
 
-const allAnimalKeys = ['dog', 'cat', 'fox', 'duck'];
+const allAnimalKeys = ['dog', 'cat', 'fox', 'lizard'];
 
 // --- UI helpers ---
 function setPlaceholder(emoji) {
@@ -140,14 +139,12 @@ animalButtons.forEach(btn => {
     btn.classList.add('active');
     currentAnimal = btn.dataset.animal;
 
-    // Update placeholder emoji to match selection
     if (currentAnimal === 'surprise') {
       setPlaceholder('🎲');
     } else {
       setPlaceholder(animals[currentAnimal].emoji);
     }
 
-    // Auto-fetch when switching animal
     fetchAnimal();
   });
 });
