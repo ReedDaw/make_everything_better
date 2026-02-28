@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -39,8 +37,8 @@
     .mode-option {
       flex: 1;
       text-align: center;
-      padding: 8px 12px;
-      font-size: 12px;
+      padding: 8px 4px;
+      font-size: 11px;
       font-weight: 600;
       color: #999;
       cursor: pointer;
@@ -50,37 +48,29 @@
       user-select: none;
     }
 
-    .mode-option.active {
-      color: #fff;
-    }
+    .mode-option.active { color: #fff; }
 
-    /* Sliding pill behind the active option */
     #toggle-pill {
       position: absolute;
       top: 4px;
       left: 4px;
       height: calc(100% - 8px);
-      width: calc(50% - 4px);
+      width: calc(33.33% - 4px);
       background: #ff6b6b;
       border-radius: 50px;
       transition: transform 0.25s ease;
       box-shadow: 0 2px 8px rgba(255, 107, 107, 0.35);
     }
 
-    #toggle-pill.quotes {
-      transform: translateX(calc(100% + 0px));
-    }
-
     /* --- Panels --- */
     .panel { width: 100%; display: none; flex-direction: column; align-items: center; gap: 16px; }
     .panel.active { display: flex; }
 
-    /* Animals panel */
+    /* Animals */
     #animal-selector {
       display: flex;
       gap: 6px;
       width: 100%;
-      justify-content: center;
     }
 
     .animal-btn {
@@ -99,12 +89,7 @@
 
     .animal-btn:hover { border-color: #ff6b6b; color: #ff6b6b; }
     .animal-btn.active { border-color: #ff6b6b; background: #ff6b6b; color: white; }
-
-    .animal-btn .emoji {
-      display: block;
-      font-size: 16px;
-      margin-bottom: 2px;
-    }
+    .animal-btn .emoji { display: block; font-size: 16px; margin-bottom: 2px; }
 
     #animal-container {
       width: 280px;
@@ -118,24 +103,11 @@
       position: relative;
     }
 
-    #animal-img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: none;
-      border-radius: 16px;
-    }
-
+    #animal-img { width: 100%; height: 100%; object-fit: cover; display: none; border-radius: 16px; }
     #placeholder { font-size: 64px; line-height: 1; }
+    #animal-loading { display: none; font-size: 13px; color: #999; position: absolute; }
 
-    #animal-loading {
-      display: none;
-      font-size: 13px;
-      color: #999;
-      position: absolute;
-    }
-
-    /* Quotes panel */
+    /* Quotes */
     #quote-box {
       width: 100%;
       min-height: 180px;
@@ -149,30 +121,42 @@
       box-shadow: 0 2px 12px rgba(0,0,0,0.06);
     }
 
-    #quote-loading {
-      font-size: 13px;
-      color: #bbb;
-      text-align: center;
-      display: none;
+    #quote-loading { font-size: 13px; color: #bbb; text-align: center; display: none; }
+    #quote-text { font-size: 15px; line-height: 1.6; color: #333; font-style: italic; text-align: center; }
+    #quote-author { font-size: 12px; font-weight: 600; color: #ff6b6b; text-align: center; letter-spacing: 0.5px; }
+
+    /* Touch Grass */
+    #grass-box {
+      width: 100%;
+      background: white;
+      border-radius: 16px;
+      padding: 28px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      min-height: 180px;
+      justify-content: center;
     }
 
-    #quote-text {
-      font-size: 15px;
-      line-height: 1.6;
+    #grass-emoji { font-size: 48px; line-height: 1; }
+
+    #grass-action {
+      font-size: 20px;
+      font-weight: 700;
       color: #333;
-      font-style: italic;
       text-align: center;
     }
 
-    #quote-author {
-      font-size: 12px;
-      font-weight: 600;
-      color: #ff6b6b;
+    #grass-detail {
+      font-size: 13px;
+      line-height: 1.6;
+      color: #777;
       text-align: center;
-      letter-spacing: 0.5px;
     }
 
-    /* Shared button */
+    /* Shared */
     .action-btn {
       background: #ff6b6b;
       color: white;
@@ -191,7 +175,7 @@
     .action-btn:active { transform: scale(0.97); }
     .action-btn:disabled { opacity: 0.6; transform: none; cursor: default; }
 
-    #animal-caption, #quote-caption {
+    #animal-caption, #quote-caption, #grass-caption {
       font-size: 12px;
       color: #aaa;
       text-align: center;
@@ -203,39 +187,27 @@
 
   <h1>Make Everything Better</h1>
 
-  <!-- Mode toggle -->
   <div id="mode-toggle">
     <div id="toggle-pill"></div>
     <div class="mode-option active" data-mode="animals">🐾 Animals</div>
     <div class="mode-option" data-mode="quotes">✨ Quotes</div>
+    <div class="mode-option" data-mode="touchgrass">🌿 Touch Grass</div>
   </div>
 
   <!-- Animals panel -->
   <div class="panel active" id="panel-animals">
     <div id="animal-selector">
-      <button class="animal-btn active" data-animal="dog">
-        <span class="emoji">🐶</span>Dog
-      </button>
-      <button class="animal-btn" data-animal="cat">
-        <span class="emoji">🐱</span>Cat
-      </button>
-      <button class="animal-btn" data-animal="fox">
-        <span class="emoji">🦊</span>Fox
-      </button>
-      <button class="animal-btn" data-animal="lizard">
-        <span class="emoji">🦎</span>Lizard
-      </button>
-      <button class="animal-btn" data-animal="surprise">
-        <span class="emoji">🎲</span>Surprise
-      </button>
+      <button class="animal-btn active" data-animal="dog"><span class="emoji">🐶</span>Dog</button>
+      <button class="animal-btn" data-animal="cat"><span class="emoji">🐱</span>Cat</button>
+      <button class="animal-btn" data-animal="fox"><span class="emoji">🦊</span>Fox</button>
+      <button class="animal-btn" data-animal="lizard"><span class="emoji">🦎</span>Lizard</button>
+      <button class="animal-btn" data-animal="surprise"><span class="emoji">🎲</span>Surprise</button>
     </div>
-
     <div id="animal-container">
       <span id="placeholder">🐶</span>
       <span id="animal-loading">fetching cuteness...</span>
       <img id="animal-img" alt="A very cute animal" />
     </div>
-
     <button class="action-btn" id="animal-btn">🐾 Give Me Cute</button>
     <p id="animal-caption"></p>
   </div>
@@ -247,11 +219,24 @@
       <p id="quote-text"></p>
       <p id="quote-author"></p>
     </div>
-
     <button class="action-btn" id="quote-btn">✨ Another Quote</button>
     <p id="quote-caption"></p>
   </div>
 
+  <!-- Touch Grass panel -->
+  <div class="panel" id="panel-touchgrass">
+    <div id="grass-box">
+      <span id="grass-emoji"></span>
+      <p id="grass-action"></p>
+      <p id="grass-detail"></p>
+    </div>
+    <button class="action-btn" id="grass-btn">🌿 Give Me Another</button>
+    <p id="grass-caption"></p>
+  </div>
+
+  <!-- Data files first, then logic -->
+  <script src="quotes.js"></script>
+  <script src="touchgrass.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>
