@@ -206,6 +206,7 @@ function fetchGrass() {
   grassCelebration.style.display = 'none';
 }
 grassDoneBtn.addEventListener('click', celebrateGrass);
+grassNextBtn.addEventListener('click', fetchGrass);
 grassBtn.addEventListener('click', fetchGrass);
 
 // ─── Movement ─────────────────────────────────────────────────
@@ -306,6 +307,7 @@ function fetchMovement() {
 }
 
 movementDoneBtn.addEventListener('click', celebrateMovement);
+movementNextBtn.addEventListener('click', fetchMovement);
 movementBtn.addEventListener('click', fetchMovement);
 
 // ─── Confetti ─────────────────────────────────────────────────
