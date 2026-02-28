@@ -178,6 +178,72 @@
       font-size: 12px; color: #aaa;
       text-align: center; min-height: 16px;
     }
+
+    /* Done / celebration */
+    .done-btn {
+      background: white;
+      color: #4caf50;
+      border: 2px solid #4caf50;
+      border-radius: 50px;
+      padding: 12px 28px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      width: 100%;
+    }
+    .done-btn:hover { background: #4caf50; color: white; }
+
+    .celebration-box {
+      display: none;
+      width: 100%;
+      background: white;
+      border-radius: 16px;
+      padding: 28px 20px;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    .celebration-box canvas {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      display: none;
+    }
+
+    .celebration-trophy { font-size: 48px; line-height: 1; }
+
+    .celebration-text {
+      font-size: 18px;
+      font-weight: 700;
+      color: #333;
+    }
+
+    .celebration-sub {
+      font-size: 13px;
+      color: #999;
+    }
+
+    .next-btn {
+      display: none;
+      background: #f0e8e0;
+      color: #555;
+      border: none;
+      border-radius: 50px;
+      padding: 12px 28px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      width: 100%;
+    }
+    .next-btn:hover { background: #e8ddd5; }
   </style>
 </head>
 <body>
@@ -228,7 +294,15 @@
       <p class="prompt-action" id="grass-action"></p>
       <p class="prompt-detail" id="grass-detail"></p>
     </div>
-    <button class="action-btn" id="grass-btn">🌿 Give Me Another</button>
+    <button class="done-btn" id="grass-done-btn">✅ I did it!</button>
+    <div class="celebration-box" id="grass-celebration">
+      <canvas id="grass-confetti-canvas"></canvas>
+      <span class="celebration-trophy">🏆</span>
+      <p class="celebration-text">You actually did it.</p>
+      <p class="celebration-sub">That's more than most people.</p>
+    </div>
+    <button class="next-btn" id="grass-next-btn" onclick="fetchGrass()">🌿 Give Me Another</button>
+    <button class="action-btn" id="grass-btn">Skip → Next Prompt</button>
     <p class="panel-caption" id="grass-caption"></p>
   </div>
 
@@ -243,7 +317,15 @@
       <div id="timer-display">0:00</div>
       <button id="timer-start-btn">▶ Start Timer</button>
     </div>
-    <button class="action-btn" id="movement-btn">🏃 New Exercise</button>
+    <button class="done-btn" id="movement-done-btn">✅ I did it!</button>
+    <div class="celebration-box" id="movement-celebration">
+      <canvas id="movement-confetti-canvas"></canvas>
+      <span class="celebration-trophy">🏆</span>
+      <p class="celebration-text">You actually did it.</p>
+      <p class="celebration-sub">That's more than most people.</p>
+    </div>
+    <button class="next-btn" id="movement-next-btn" onclick="fetchMovement()">🏃 New Exercise</button>
+    <button class="action-btn" id="movement-btn">Skip → New Exercise</button>
     <p class="panel-caption" id="movement-caption"></p>
   </div>
 

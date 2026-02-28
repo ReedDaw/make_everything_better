@@ -19,21 +19,27 @@ const quoteBtn        = document.getElementById('quote-btn');
 const quoteCaption    = document.getElementById('quote-caption');
 
 // Touch Grass
-const grassEmoji      = document.getElementById('grass-emoji');
-const grassAction     = document.getElementById('grass-action');
-const grassDetail     = document.getElementById('grass-detail');
-const grassBtn        = document.getElementById('grass-btn');
-const grassCaption    = document.getElementById('grass-caption');
+const grassEmoji       = document.getElementById('grass-emoji');
+const grassAction      = document.getElementById('grass-action');
+const grassDetail      = document.getElementById('grass-detail');
+const grassBtn         = document.getElementById('grass-btn');
+const grassDoneBtn     = document.getElementById('grass-done-btn');
+const grassNextBtn     = document.getElementById('grass-next-btn');
+const grassCelebration = document.getElementById('grass-celebration');
+const grassCaption     = document.getElementById('grass-caption');
 
 // Movement
-const movementEmoji   = document.getElementById('movement-emoji');
-const movementAction  = document.getElementById('movement-action');
-const movementDetail  = document.getElementById('movement-detail');
-const movementBtn     = document.getElementById('movement-btn');
-const movementCaption = document.getElementById('movement-caption');
-const timerSection    = document.getElementById('timer-section');
-const timerDisplay    = document.getElementById('timer-display');
-const timerStartBtn   = document.getElementById('timer-start-btn');
+const movementEmoji    = document.getElementById('movement-emoji');
+const movementAction   = document.getElementById('movement-action');
+const movementDetail   = document.getElementById('movement-detail');
+const movementBtn      = document.getElementById('movement-btn');
+const movementDoneBtn  = document.getElementById('movement-done-btn');
+const movementNextBtn  = document.getElementById('movement-next-btn');
+const movementCelebration = document.getElementById('movement-celebration');
+const movementCaption  = document.getElementById('movement-caption');
+const timerSection     = document.getElementById('timer-section');
+const timerDisplay     = document.getElementById('timer-display');
+const timerStartBtn    = document.getElementById('timer-start-btn');
 
 // ─── State ───────────────────────────────────────────────────
 let currentMode      = 'animals';
@@ -174,7 +180,16 @@ quoteBtn.addEventListener('click', fetchQuote);
 
 // ─── Touch Grass ──────────────────────────────────────────────
 const grassReactions = ["Close the laptop.", "Do it. Right now.", "This one's non-negotiable.", "Your body will thank you.", "Seriously. Go."];
+const grassCelebrations = ["Look at you. Actually doing it. 🌿", "That counts. That really counts.", "Your nervous system thanks you.", "Certified grass toucher. 🏆", "You just chose yourself. Nice."];
 let lastGrassIndex = -1;
+
+function celebrateGrass() {
+  grassDoneBtn.style.display = 'none';
+  grassNextBtn.style.display = 'block';
+  grassCelebration.style.display = 'flex';
+  grassCaption.textContent = grassCelebrations[Math.floor(Math.random() * grassCelebrations.length)];
+  launchConfetti(document.getElementById('grass-confetti-canvas'));
+}
 
 function fetchGrass() {
   let index;
@@ -185,7 +200,12 @@ function fetchGrass() {
   grassAction.textContent = prompt.action;
   grassDetail.textContent = prompt.detail;
   grassCaption.textContent = grassReactions[Math.floor(Math.random() * grassReactions.length)];
+  // Reset celebration state
+  grassDoneBtn.style.display = 'block';
+  grassNextBtn.style.display = 'none';
+  grassCelebration.style.display = 'none';
 }
+grassDoneBtn.addEventListener('click', celebrateGrass);
 grassBtn.addEventListener('click', fetchGrass);
 
 // ─── Movement ─────────────────────────────────────────────────
@@ -242,6 +262,18 @@ timerStartBtn.addEventListener('click', () => {
   }
 });
 
+const movementCelebrations = ["Beast mode. Activated. 💪", "That just happened. You did that.", "Your future self felt that.", "Body: 1. Excuses: 0. 🏆", "Endorphins incoming. You earned it."];
+
+function celebrateMovement() {
+  stopTimer();
+  movementDoneBtn.style.display = 'none';
+  movementNextBtn.style.display = 'block';
+  timerSection.style.display = 'none';
+  movementCelebration.style.display = 'flex';
+  movementCaption.textContent = movementCelebrations[Math.floor(Math.random() * movementCelebrations.length)];
+  launchConfetti(document.getElementById('movement-confetti-canvas'));
+}
+
 function fetchMovement() {
   stopTimer();
 
@@ -254,6 +286,11 @@ function fetchMovement() {
   movementAction.textContent = prompt.action;
   movementDetail.textContent = prompt.detail;
   movementCaption.textContent = movementReactions[Math.floor(Math.random() * movementReactions.length)];
+
+  // Reset celebration state
+  movementDoneBtn.style.display = 'block';
+  movementNextBtn.style.display = 'none';
+  movementCelebration.style.display = 'none';
 
   // Show/hide timer based on whether this prompt has a duration
   if (prompt.timerSeconds) {
@@ -268,7 +305,51 @@ function fetchMovement() {
   }
 }
 
+movementDoneBtn.addEventListener('click', celebrateMovement);
 movementBtn.addEventListener('click', fetchMovement);
+
+// ─── Confetti ─────────────────────────────────────────────────
+function launchConfetti(canvas) {
+  if (!canvas) return;
+  canvas.style.display = 'block';
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+
+  const pieces = Array.from({ length: 60 }, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * -canvas.height,
+    w: 6 + Math.random() * 6,
+    h: 10 + Math.random() * 6,
+    color: ['#ff6b6b','#ffd93d','#6bcb77','#4d96ff','#ff6ef7'][Math.floor(Math.random() * 5)],
+    angle: Math.random() * Math.PI * 2,
+    spin: (Math.random() - 0.5) * 0.2,
+    vx: (Math.random() - 0.5) * 3,
+    vy: 2 + Math.random() * 3,
+  }));
+
+  let frame;
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let allGone = true;
+    pieces.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.angle += p.spin;
+      if (p.y < canvas.height + 20) allGone = false;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.angle);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+      ctx.restore();
+    });
+    if (!allGone) { frame = requestAnimationFrame(draw); }
+    else { canvas.style.display = 'none'; cancelAnimationFrame(frame); }
+  }
+  if (frame) cancelAnimationFrame(frame);
+  draw();
+}
 
 // ─── Init ─────────────────────────────────────────────────────
 chrome.storage.local.get('lastMode', (result) => {
