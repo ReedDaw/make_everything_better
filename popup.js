@@ -1,33 +1,47 @@
 // ─── Element refs ────────────────────────────────────────────
-const togglePill    = document.getElementById('toggle-pill');
-const modeOptions   = document.querySelectorAll('.mode-option');
-const panels        = document.querySelectorAll('.panel');
+const togglePill      = document.getElementById('toggle-pill');
+const modeOptions     = document.querySelectorAll('.mode-option');
+const panels          = document.querySelectorAll('.panel');
 
 // Animals
-const animalButtons = document.querySelectorAll('.animal-btn');
-const animalImg     = document.getElementById('animal-img');
-const placeholder   = document.getElementById('placeholder');
-const animalLoading = document.getElementById('animal-loading');
-const animalBtn     = document.getElementById('animal-btn');
-const animalCaption = document.getElementById('animal-caption');
+const animalButtons   = document.querySelectorAll('.animal-btn');
+const animalImg       = document.getElementById('animal-img');
+const placeholder     = document.getElementById('placeholder');
+const animalLoading   = document.getElementById('animal-loading');
+const animalBtn       = document.getElementById('animal-btn');
+const animalCaption   = document.getElementById('animal-caption');
 
 // Quotes
-const quoteText     = document.getElementById('quote-text');
-const quoteAuthor   = document.getElementById('quote-author');
-const quoteLoading  = document.getElementById('quote-loading');
-const quoteBtn      = document.getElementById('quote-btn');
-const quoteCaption  = document.getElementById('quote-caption');
+const quoteText       = document.getElementById('quote-text');
+const quoteAuthor     = document.getElementById('quote-author');
+const quoteLoading    = document.getElementById('quote-loading');
+const quoteBtn        = document.getElementById('quote-btn');
+const quoteCaption    = document.getElementById('quote-caption');
 
 // Touch Grass
-const grassEmoji    = document.getElementById('grass-emoji');
-const grassAction   = document.getElementById('grass-action');
-const grassDetail   = document.getElementById('grass-detail');
-const grassBtn      = document.getElementById('grass-btn');
-const grassCaption  = document.getElementById('grass-caption');
+const grassEmoji      = document.getElementById('grass-emoji');
+const grassAction     = document.getElementById('grass-action');
+const grassDetail     = document.getElementById('grass-detail');
+const grassBtn        = document.getElementById('grass-btn');
+const grassCaption    = document.getElementById('grass-caption');
+
+// Movement
+const movementEmoji   = document.getElementById('movement-emoji');
+const movementAction  = document.getElementById('movement-action');
+const movementDetail  = document.getElementById('movement-detail');
+const movementBtn     = document.getElementById('movement-btn');
+const movementCaption = document.getElementById('movement-caption');
+const timerSection    = document.getElementById('timer-section');
+const timerDisplay    = document.getElementById('timer-display');
+const timerStartBtn   = document.getElementById('timer-start-btn');
 
 // ─── State ───────────────────────────────────────────────────
-let currentMode   = 'animals';
-let currentAnimal = 'dog';
+let currentMode      = 'animals';
+let currentAnimal    = 'dog';
+let timerInterval    = null;
+let timerSeconds     = 0;
+let timerRunning     = false;
+let timerTotal       = 0;
 
 // ─── Animal config ───────────────────────────────────────────
 const animals = {
@@ -55,7 +69,7 @@ const animals = {
 const allAnimalKeys = ['dog', 'cat', 'fox', 'lizard'];
 
 // ─── Mode toggle ─────────────────────────────────────────────
-const modeOrder = ['animals', 'quotes', 'touchgrass'];
+const modeOrder = ['animals', 'quotes', 'touchgrass', 'movement'];
 
 function switchMode(mode) {
   currentMode = mode;
@@ -70,6 +84,7 @@ function switchMode(mode) {
 
   if (mode === 'quotes' && quoteText.textContent === '') fetchQuote();
   if (mode === 'touchgrass' && grassAction.textContent === '') fetchGrass();
+  if (mode === 'movement' && movementAction.textContent === '') fetchMovement();
 }
 
 modeOptions.forEach(opt => opt.addEventListener('click', () => switchMode(opt.dataset.mode)));
@@ -134,7 +149,7 @@ animalButtons.forEach(btn => {
 });
 animalBtn.addEventListener('click', fetchAnimal);
 
-// ─── Quotes (from quotes.js) ──────────────────────────────────
+// ─── Quotes ───────────────────────────────────────────────────
 const quoteReactions = ["Sit with that for a moment.", "Ok that one hit.", "Saving that one.", "Your future self needed to hear this.", "Someone really figured something out."];
 let lastQuoteIndex = -1;
 
@@ -143,12 +158,10 @@ function fetchQuote() {
   do { index = Math.floor(Math.random() * QUOTES.length); } while (index === lastQuoteIndex);
   lastQuoteIndex = index;
   const quote = QUOTES[index];
-
   quoteLoading.style.display = 'block';
   quoteText.textContent = '';
   quoteAuthor.textContent = '';
   quoteBtn.disabled = true;
-
   setTimeout(() => {
     quoteLoading.style.display = 'none';
     quoteText.textContent = `"${quote.text}"`;
@@ -159,7 +172,7 @@ function fetchQuote() {
 }
 quoteBtn.addEventListener('click', fetchQuote);
 
-// ─── Touch Grass (from touchgrass.js) ────────────────────────
+// ─── Touch Grass ──────────────────────────────────────────────
 const grassReactions = ["Close the laptop.", "Do it. Right now.", "This one's non-negotiable.", "Your body will thank you.", "Seriously. Go."];
 let lastGrassIndex = -1;
 
@@ -168,13 +181,94 @@ function fetchGrass() {
   do { index = Math.floor(Math.random() * TOUCH_GRASS_PROMPTS.length); } while (index === lastGrassIndex);
   lastGrassIndex = index;
   const prompt = TOUCH_GRASS_PROMPTS[index];
-
   grassEmoji.textContent = prompt.emoji;
   grassAction.textContent = prompt.action;
   grassDetail.textContent = prompt.detail;
   grassCaption.textContent = grassReactions[Math.floor(Math.random() * grassReactions.length)];
 }
 grassBtn.addEventListener('click', fetchGrass);
+
+// ─── Movement ─────────────────────────────────────────────────
+const movementReactions = ["Your body needs this.", "No excuses. Go.", "You'll feel better after. Promise.", "Future you says thank you.", "This is the way."];
+let lastMovementIndex = -1;
+
+function formatTime(secs) {
+  const m = Math.floor(secs / 60);
+  const s = secs % 60;
+  return `${m}:${s.toString().padStart(2, '0')}`;
+}
+
+function stopTimer() {
+  clearInterval(timerInterval);
+  timerInterval = null;
+  timerRunning = false;
+}
+
+function resetTimer() {
+  stopTimer();
+  timerSeconds = timerTotal;
+  timerDisplay.textContent = formatTime(timerSeconds);
+  timerDisplay.classList.remove('done');
+  timerStartBtn.textContent = '▶ Start Timer';
+}
+
+function startTimer() {
+  if (timerSeconds <= 0) resetTimer();
+  timerRunning = true;
+  timerStartBtn.textContent = '⏸ Pause';
+  timerInterval = setInterval(() => {
+    timerSeconds--;
+    timerDisplay.textContent = formatTime(timerSeconds);
+    // Pulse red in last 10 seconds
+    timerDisplay.classList.toggle('urgent', timerSeconds <= 10 && timerSeconds > 0);
+    if (timerSeconds <= 0) {
+      stopTimer();
+      timerDisplay.textContent = '✅ Done!';
+      timerDisplay.classList.add('done');
+      timerStartBtn.textContent = '↺ Reset';
+      movementCaption.textContent = "That's what I'm talking about. 🔥";
+    }
+  }, 1000);
+}
+
+timerStartBtn.addEventListener('click', () => {
+  if (timerDisplay.classList.contains('done')) {
+    resetTimer();
+  } else if (timerRunning) {
+    stopTimer();
+    timerStartBtn.textContent = '▶ Resume';
+  } else {
+    startTimer();
+  }
+});
+
+function fetchMovement() {
+  stopTimer();
+
+  let index;
+  do { index = Math.floor(Math.random() * MOVEMENT_PROMPTS.length); } while (index === lastMovementIndex);
+  lastMovementIndex = index;
+  const prompt = MOVEMENT_PROMPTS[index];
+
+  movementEmoji.textContent = prompt.emoji;
+  movementAction.textContent = prompt.action;
+  movementDetail.textContent = prompt.detail;
+  movementCaption.textContent = movementReactions[Math.floor(Math.random() * movementReactions.length)];
+
+  // Show/hide timer based on whether this prompt has a duration
+  if (prompt.timerSeconds) {
+    timerTotal = prompt.timerSeconds;
+    timerSeconds = timerTotal;
+    timerDisplay.textContent = formatTime(timerSeconds);
+    timerDisplay.classList.remove('done', 'urgent');
+    timerStartBtn.textContent = '▶ Start Timer';
+    timerSection.style.display = 'flex';
+  } else {
+    timerSection.style.display = 'none';
+  }
+}
+
+movementBtn.addEventListener('click', fetchMovement);
 
 // ─── Init ─────────────────────────────────────────────────────
 chrome.storage.local.get('lastMode', (result) => {
@@ -183,4 +277,5 @@ chrome.storage.local.get('lastMode', (result) => {
   if (saved === 'animals') fetchAnimal();
   else if (saved === 'quotes') fetchQuote();
   else if (saved === 'touchgrass') fetchGrass();
+  else if (saved === 'movement') fetchMovement();
 });

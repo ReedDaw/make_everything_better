@@ -1,0 +1,98 @@
+const MOVEMENT_PROMPTS = [
+  {
+    emoji: "💪",
+    action: "10 Push-ups",
+    detail: "Drop to the floor. Chest to ground, full extension up. 10 reps. Go.",
+    timerSeconds: null,
+  },
+  {
+    emoji: "🔥",
+    action: "20 Push-ups",
+    detail: "You've done 10 before. Now do 20. Same rules. Chest down, all the way up.",
+    timerSeconds: null,
+  },
+  {
+    emoji: "🧘",
+    action: "Stretch for 3 minutes",
+    detail: "Arms overhead, touch your toes, roll your neck. Move slowly. No rushing.",
+    timerSeconds: 180,
+  },
+  {
+    emoji: "⏱️",
+    action: "Stretch for 5 minutes",
+    detail: "Full body. Shoulders, hips, hamstrings, back. Take your time with each one.",
+    timerSeconds: 300,
+  },
+  {
+    emoji: "🦵",
+    action: "20 Squats",
+    detail: "Feet shoulder-width apart. Down until thighs are parallel. Back straight. 20 reps.",
+    timerSeconds: null,
+  },
+  {
+    emoji: "🏃",
+    action: "60-second wall sit",
+    detail: "Back flat against the wall. Thighs parallel to the floor. Hold it.",
+    timerSeconds: 60,
+  },
+  {
+    emoji: "🌀",
+    action: "30 Jumping jacks",
+    detail: "Old school. Arms up, legs out, repeat. Get your heart rate up.",
+    timerSeconds: null,
+  },
+  {
+    emoji: "🧗",
+    action: "30-second plank",
+    detail: "Forearms on the floor. Body straight as a board. Core tight. Hold.",
+    timerSeconds: 30,
+  },
+  {
+    emoji: "🦾",
+    action: "60-second plank",
+    detail: "You know what to do. Forearms down, hips level, breathe steady. One minute.",
+    timerSeconds: 60,
+  },
+  {
+    emoji: "🪑",
+    action: "50 Sit-ups",
+    detail: "Hands behind your head, feet flat. All the way up, all the way down. 50 reps.",
+    timerSeconds: null,
+  },
+  {
+    emoji: "🦶",
+    action: "30 Calf raises",
+    detail: "Stand near a wall for balance. Rise up on your toes slowly, lower back down. 30 reps.",
+    timerSeconds: null,
+  },
+  {
+    emoji: "🤸",
+    action: "10 Burpees",
+    detail: "Squat, jump back to plank, push-up, jump forward, jump up. 10 times. Yes, really.",
+    timerSeconds: null,
+  },
+  {
+    emoji: "🧠",
+    action: "2-minute movement",
+    detail: "Stand up. Walk somewhere. Move a little bit. Just move your body for 2 minutes.",
+    timerSeconds: 120,
+  },
+  {
+    emoji: "💥",
+    action: "20 Mountain climbers",
+    detail: "Plank position. Drive each knee toward your chest in alternating quick steps. 20 total.",
+    timerSeconds: null,
+  },
+  {
+    emoji: "🙆",
+    action: "Shoulder rolls — 60 seconds",
+    detail: "Roll both shoulders forward 10 times, then backward 10 times. Slow and deliberate.",
+    timerSeconds: 60,
+  },
+  {
+    emoji: "🏋️",
+    action: "15 Tricep dips",
+    detail: "Use the edge of your chair. Hands gripping the seat, lower your body down and push back up. 15 reps.",
+    timerSeconds: null,
+  },
+];
