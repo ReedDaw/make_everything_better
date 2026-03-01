@@ -185,6 +185,7 @@ let lastGrassIndex = -1;
 
 function celebrateGrass() {
   grassDoneBtn.style.display = 'none';
+  grassBtn.style.display = 'none';
   grassNextBtn.style.display = 'block';
   grassCelebration.style.display = 'flex';
   grassCaption.textContent = grassCelebrations[Math.floor(Math.random() * grassCelebrations.length)];
@@ -202,6 +203,7 @@ function fetchGrass() {
   grassCaption.textContent = grassReactions[Math.floor(Math.random() * grassReactions.length)];
   // Reset celebration state
   grassDoneBtn.style.display = 'block';
+  grassBtn.style.display = 'block';
   grassNextBtn.style.display = 'none';
   grassCelebration.style.display = 'none';
 }
@@ -268,6 +270,7 @@ const movementCelebrations = ["Beast mode. Activated. 💪", "That just happened
 function celebrateMovement() {
   stopTimer();
   movementDoneBtn.style.display = 'none';
+  movementBtn.style.display = 'none';
   movementNextBtn.style.display = 'block';
   timerSection.style.display = 'none';
   movementCelebration.style.display = 'flex';
@@ -290,6 +293,7 @@ function fetchMovement() {
 
   // Reset celebration state
   movementDoneBtn.style.display = 'block';
+  movementBtn.style.display = 'block';
   movementNextBtn.style.display = 'none';
   movementCelebration.style.display = 'none';
 
