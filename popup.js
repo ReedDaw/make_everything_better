@@ -41,6 +41,18 @@ const timerSection     = document.getElementById('timer-section');
 const timerDisplay     = document.getElementById('timer-display');
 const timerStartBtn    = document.getElementById('timer-start-btn');
 
+// Productivity
+const prodPrompt      = document.getElementById('prod-prompt');
+const prodInput       = document.getElementById('prod-input');
+const prodSubmitBtn   = document.getElementById('prod-submit-btn');
+const prodGoalCard    = document.getElementById('prod-goal-card');
+const prodGoalText    = document.getElementById('prod-goal-text');
+const prodDoneBtn     = document.getElementById('prod-done-btn');
+const prodClearBtn    = document.getElementById('prod-clear-btn');
+const prodCelebration = document.getElementById('prod-celebration');
+const prodNextBtn     = document.getElementById('prod-next-btn');
+const prodCaption     = document.getElementById('prod-caption');
+
 // ─── State ───────────────────────────────────────────────────
 let currentMode      = 'animals';
 let currentAnimal    = 'dog';
@@ -75,7 +87,7 @@ const animals = {
 const allAnimalKeys = ['dog', 'cat', 'fox', 'lizard'];
 
 // ─── Mode toggle ─────────────────────────────────────────────
-const modeOrder = ['animals', 'quotes', 'touchgrass', 'movement'];
+const modeOrder = ['animals', 'quotes', 'touchgrass', 'movement', 'productivity'];
 
 function switchMode(mode) {
   currentMode = mode;
@@ -91,6 +103,7 @@ function switchMode(mode) {
   if (mode === 'quotes' && quoteText.textContent === '') fetchQuote();
   if (mode === 'touchgrass' && grassAction.textContent === '') fetchGrass();
   if (mode === 'movement' && movementAction.textContent === '') fetchMovement();
+  if (mode === 'productivity') initProductivity();
 }
 
 modeOptions.forEach(opt => opt.addEventListener('click', () => switchMode(opt.dataset.mode)));
@@ -314,6 +327,83 @@ movementDoneBtn.addEventListener('click', celebrateMovement);
 movementNextBtn.addEventListener('click', fetchMovement);
 movementBtn.addEventListener('click', fetchMovement);
 
+// ─── Productivity ────────────────────────────────────────────────
+let lastProdPromptIndex = -1;
+
+function getRandomProdPrompt() {
+  let index;
+  do { index = Math.floor(Math.random() * PRODUCTIVITY_PROMPTS.length); } while (index === lastProdPromptIndex);
+  lastProdPromptIndex = index;
+  return PRODUCTIVITY_PROMPTS[index];
+}
+
+function showProductivityInput() {
+  prodPrompt.textContent = getRandomProdPrompt();
+  prodInput.value = '';
+  prodSubmitBtn.disabled = true;
+  document.getElementById('productivity-box').style.display = 'flex';
+  prodGoalCard.style.display = 'none';
+  prodCelebration.style.display = 'none';
+  prodNextBtn.style.display = 'none';
+  prodCaption.textContent = '';
+}
+
+function showSavedGoal(goalText) {
+  prodGoalText.textContent = goalText;
+  document.getElementById('productivity-box').style.display = 'none';
+  prodGoalCard.style.display = 'flex';
+  prodCelebration.style.display = 'none';
+  prodNextBtn.style.display = 'none';
+  prodCaption.textContent = 'You committed to this. Now go do it.';
+}
+
+function initProductivity() {
+  chrome.storage.local.get('savedGoal', (result) => {
+    if (result.savedGoal) {
+      showSavedGoal(result.savedGoal);
+    } else {
+      showProductivityInput();
+    }
+  });
+}
+
+// Enable submit only when there's text
+prodInput.addEventListener('input', () => {
+  prodSubmitBtn.disabled = prodInput.value.trim() === '';
+});
+
+// Save goal
+prodSubmitBtn.addEventListener('click', () => {
+  const goal = prodInput.value.trim();
+  if (!goal) return;
+  chrome.storage.local.set({ savedGoal: goal }, () => {
+    showSavedGoal(goal);
+  });
+});
+
+// Mark goal as done
+prodDoneBtn.addEventListener('click', () => {
+  chrome.storage.local.remove('savedGoal', () => {
+    prodGoalCard.style.display = 'none';
+    prodCelebration.style.display = 'flex';
+    prodNextBtn.style.display = 'block';
+    prodCaption.textContent = "You said you would. You did. That's everything.";
+    launchConfetti(document.getElementById('prod-confetti-canvas'));
+  });
+});
+
+// Clear goal without celebrating
+prodClearBtn.addEventListener('click', () => {
+  chrome.storage.local.remove('savedGoal', () => {
+    showProductivityInput();
+  });
+});
+
+// Set a new goal after celebrating
+prodNextBtn.addEventListener('click', () => {
+  showProductivityInput();
+});
+
 // ─── Confetti ─────────────────────────────────────────────────
 function launchConfetti(canvas) {
   if (!canvas) return;
@@ -365,4 +455,5 @@ chrome.storage.local.get('lastMode', (result) => {
   else if (saved === 'quotes') fetchQuote();
   else if (saved === 'touchgrass') fetchGrass();
   else if (saved === 'movement') fetchMovement();
+  else if (saved === 'productivity') initProductivity();
 });

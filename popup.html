@@ -6,7 +6,7 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      width: 320px;
+      width: 480px;
       background: #fffaf5;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       display: flex;
@@ -17,14 +17,14 @@
     }
 
     h1 {
-      font-size: 14px;
-      font-weight: 600;
+      font-size: 15px;
+      font-weight: 700;
       color: #444;
       letter-spacing: 0.3px;
       text-align: center;
     }
 
-    /* --- Toggle --- */
+    /* --- Mode Pills --- */
     #mode-toggle {
       display: flex;
       background: #f0e8e0;
@@ -37,8 +37,8 @@
     .mode-option {
       flex: 1;
       text-align: center;
-      padding: 8px 2px;
-      font-size: 10px;
+      padding: 8px 4px;
+      font-size: 11px;
       font-weight: 600;
       color: #999;
       cursor: pointer;
@@ -56,7 +56,7 @@
       top: 4px;
       left: 4px;
       height: calc(100% - 8px);
-      width: calc(25% - 4px);
+      width: calc(16.666% - 4px);
       background: #ff6b6b;
       border-radius: 50px;
       transition: transform 0.25s ease, width 0.25s ease;
@@ -88,7 +88,7 @@
     .animal-btn .emoji { display: block; font-size: 16px; margin-bottom: 2px; }
 
     #animal-container {
-      width: 280px; height: 280px;
+      width: 100%; aspect-ratio: 1;
       border-radius: 16px; overflow: hidden;
       background: #f0e8e0;
       display: flex; align-items: center; justify-content: center;
@@ -100,150 +100,173 @@
 
     /* Quotes */
     #quote-box {
-      width: 100%; min-height: 180px;
+      width: 100%; min-height: 160px;
       background: white; border-radius: 16px;
-      padding: 24px 20px;
+      padding: 28px 24px;
       display: flex; flex-direction: column; justify-content: center; gap: 16px;
       box-shadow: 0 2px 12px rgba(0,0,0,0.06);
     }
     #quote-loading { font-size: 13px; color: #bbb; text-align: center; display: none; }
-    #quote-text { font-size: 15px; line-height: 1.6; color: #333; font-style: italic; text-align: center; }
-    #quote-author { font-size: 12px; font-weight: 600; color: #ff6b6b; text-align: center; }
+    #quote-text { font-size: 16px; line-height: 1.6; color: #333; font-style: italic; text-align: center; }
+    #quote-author { font-size: 13px; font-weight: 600; color: #ff6b6b; text-align: center; }
 
-    /* Touch Grass & Movement shared card style */
+    /* Touch Grass & Movement shared card */
     .prompt-box {
       width: 100%; background: white; border-radius: 16px;
-      padding: 28px 20px;
+      padding: 28px 24px;
       display: flex; flex-direction: column; align-items: center; gap: 12px;
       box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-      min-height: 180px; justify-content: center;
+      min-height: 160px; justify-content: center;
     }
     .prompt-emoji { font-size: 48px; line-height: 1; }
     .prompt-action { font-size: 20px; font-weight: 700; color: #333; text-align: center; }
-    .prompt-detail { font-size: 13px; line-height: 1.6; color: #777; text-align: center; }
+    .prompt-detail { font-size: 14px; line-height: 1.6; color: #777; text-align: center; }
 
     /* Timer */
     #timer-section {
-      width: 100%;
-      background: white;
-      border-radius: 16px;
+      width: 100%; background: white; border-radius: 16px;
       padding: 16px 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 12px;
+      display: flex; flex-direction: column; align-items: center; gap: 12px;
       box-shadow: 0 2px 12px rgba(0,0,0,0.06);
     }
-
     #timer-display {
-      font-size: 42px;
-      font-weight: 700;
-      color: #333;
-      letter-spacing: 2px;
-      font-variant-numeric: tabular-nums;
+      font-size: 48px; font-weight: 700; color: #333;
+      letter-spacing: 2px; font-variant-numeric: tabular-nums;
       transition: color 0.3s ease;
     }
-
     #timer-display.urgent { color: #ff6b6b; }
     #timer-display.done { color: #4caf50; }
-
     #timer-start-btn {
-      background: #f0e8e0;
-      color: #555;
-      border: none;
-      border-radius: 50px;
-      padding: 10px 28px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      width: 100%;
+      background: #f0e8e0; color: #555; border: none;
+      border-radius: 50px; padding: 10px 28px;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      transition: all 0.15s ease; width: 100%;
     }
     #timer-start-btn:hover { background: #e8ddd5; }
 
-    /* Shared button */
+    /* Productivity */
+    #productivity-box {
+      width: 100%; background: white; border-radius: 16px;
+      padding: 24px; display: flex; flex-direction: column; gap: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+
+    #prod-prompt {
+      font-size: 16px; font-weight: 600; color: #333;
+      line-height: 1.5; text-align: center;
+    }
+
+    #prod-input {
+      width: 100%; border: 2px solid #e8e0d8; border-radius: 12px;
+      padding: 12px 16px; font-size: 14px; color: #333;
+      font-family: inherit; resize: none; outline: none;
+      transition: border-color 0.15s ease; line-height: 1.5;
+      min-height: 80px;
+    }
+    #prod-input:focus { border-color: #ff6b6b; }
+    #prod-input::placeholder { color: #ccc; }
+
+    #prod-submit-btn {
+      background: #ff6b6b; color: white; border: none;
+      border-radius: 50px; padding: 12px 28px;
+      font-size: 14px; font-weight: 600; cursor: pointer;
+      transition: all 0.15s ease;
+      box-shadow: 0 4px 12px rgba(255, 107, 107, 0.35);
+    }
+    #prod-submit-btn:hover { background: #ff5252; transform: scale(1.02); }
+    #prod-submit-btn:disabled { opacity: 0.4; transform: none; cursor: default; }
+
+    /* Saved goal card */
+    #prod-goal-card {
+      display: none;
+      width: 100%; background: white; border-radius: 16px;
+      padding: 20px 24px; flex-direction: column; gap: 14px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+
+    #prod-goal-label {
+      font-size: 11px; font-weight: 700; color: #ff6b6b;
+      letter-spacing: 1px; text-transform: uppercase;
+    }
+
+    #prod-goal-text {
+      font-size: 16px; font-weight: 600; color: #333; line-height: 1.5;
+    }
+
+    #prod-goal-actions { display: flex; gap: 10px; }
+
+    #prod-done-btn {
+      flex: 1; background: white; color: #4caf50;
+      border: 2px solid #4caf50; border-radius: 50px;
+      padding: 10px; font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: all 0.15s ease;
+    }
+    #prod-done-btn:hover { background: #4caf50; color: white; }
+
+    #prod-clear-btn {
+      flex: 1; background: white; color: #aaa;
+      border: 2px solid #e8e0d8; border-radius: 50px;
+      padding: 10px; font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: all 0.15s ease;
+    }
+    #prod-clear-btn:hover { border-color: #ccc; color: #888; }
+
+    /* Done / celebration */
+    .done-btn {
+      background: white; color: #4caf50;
+      border: 2px solid #4caf50; border-radius: 50px;
+      padding: 12px 28px; font-size: 15px; font-weight: 600;
+      cursor: pointer; transition: all 0.15s ease; width: 100%;
+    }
+    .done-btn:hover { background: #4caf50; color: white; }
+
+    .celebration-box {
+      display: none; width: 100%; background: white; border-radius: 16px;
+      padding: 28px 24px; flex-direction: column; align-items: center; gap: 10px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      position: relative; overflow: hidden; text-align: center;
+    }
+    .celebration-box canvas {
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%; pointer-events: none; display: none;
+    }
+    .celebration-trophy { font-size: 48px; line-height: 1; }
+    .celebration-text { font-size: 18px; font-weight: 700; color: #333; }
+    .celebration-sub { font-size: 13px; color: #999; }
+
+    /* Productivity celebration */
+    #prod-celebration {
+      display: none; width: 100%; background: white; border-radius: 16px;
+      padding: 28px 24px; flex-direction: column; align-items: center; gap: 10px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      position: relative; overflow: hidden; text-align: center;
+    }
+    #prod-celebration canvas {
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%; pointer-events: none; display: none;
+    }
+
+    .next-btn {
+      display: none; background: #f0e8e0; color: #555; border: none;
+      border-radius: 50px; padding: 12px 28px;
+      font-size: 14px; font-weight: 600; cursor: pointer;
+      transition: all 0.15s ease; width: 100%;
+    }
+    .next-btn:hover { background: #e8ddd5; }
+
+    /* Shared action button */
     .action-btn {
       background: #ff6b6b; color: white; border: none;
       border-radius: 50px; padding: 12px 28px;
       font-size: 15px; font-weight: 600; cursor: pointer;
       transition: transform 0.1s ease, background 0.2s ease;
-      box-shadow: 0 4px 12px rgba(255, 107, 107, 0.35);
-      width: 100%;
+      box-shadow: 0 4px 12px rgba(255, 107, 107, 0.35); width: 100%;
     }
     .action-btn:hover { background: #ff5252; transform: scale(1.03); }
     .action-btn:active { transform: scale(0.97); }
     .action-btn:disabled { opacity: 0.6; transform: none; cursor: default; }
 
-    .panel-caption {
-      font-size: 12px; color: #aaa;
-      text-align: center; min-height: 16px;
-    }
-
-    /* Done / celebration */
-    .done-btn {
-      background: white;
-      color: #4caf50;
-      border: 2px solid #4caf50;
-      border-radius: 50px;
-      padding: 12px 28px;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      width: 100%;
-    }
-    .done-btn:hover { background: #4caf50; color: white; }
-
-    .celebration-box {
-      display: none;
-      width: 100%;
-      background: white;
-      border-radius: 16px;
-      padding: 28px 20px;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-      position: relative;
-      overflow: hidden;
-      text-align: center;
-    }
-
-    .celebration-box canvas {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      pointer-events: none;
-      display: none;
-    }
-
-    .celebration-trophy { font-size: 48px; line-height: 1; }
-
-    .celebration-text {
-      font-size: 18px;
-      font-weight: 700;
-      color: #333;
-    }
-
-    .celebration-sub {
-      font-size: 13px;
-      color: #999;
-    }
-
-    .next-btn {
-      display: none;
-      background: #f0e8e0;
-      color: #555;
-      border: none;
-      border-radius: 50px;
-      padding: 12px 28px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      width: 100%;
-    }
-    .next-btn:hover { background: #e8ddd5; }
+    .panel-caption { font-size: 12px; color: #aaa; text-align: center; min-height: 16px; }
   </style>
 </head>
 <body>
@@ -256,6 +279,7 @@
     <div class="mode-option" data-mode="quotes">✨ Quotes</div>
     <div class="mode-option" data-mode="touchgrass">🌿 Grass</div>
     <div class="mode-option" data-mode="movement">🏃 Move</div>
+    <div class="mode-option" data-mode="productivity">🎯 Focus</div>
   </div>
 
   <!-- Animals panel -->
@@ -329,9 +353,42 @@
     <p class="panel-caption" id="movement-caption"></p>
   </div>
 
+  <!-- Productivity panel -->
+  <div class="panel" id="panel-productivity">
+
+    <!-- Input view -->
+    <div id="productivity-box">
+      <p id="prod-prompt"></p>
+      <textarea id="prod-input" placeholder="Type it out..."></textarea>
+      <button id="prod-submit-btn" disabled>💾 Save My Goal</button>
+    </div>
+
+    <!-- Saved goal view -->
+    <div id="prod-goal-card">
+      <p id="prod-goal-label">🎯 Your goal</p>
+      <p id="prod-goal-text"></p>
+      <div id="prod-goal-actions">
+        <button id="prod-done-btn">✅ I did it!</button>
+        <button id="prod-clear-btn">✕ Clear & reset</button>
+      </div>
+    </div>
+
+    <!-- Celebration view -->
+    <div id="prod-celebration">
+      <canvas id="prod-confetti-canvas"></canvas>
+      <span style="font-size:48px">🏆</span>
+      <p style="font-size:18px;font-weight:700;color:#333">Goal crushed.</p>
+      <p style="font-size:13px;color:#999">That's how it's done.</p>
+    </div>
+
+    <button class="next-btn" id="prod-next-btn">🎯 Set a New Goal</button>
+    <p class="panel-caption" id="prod-caption"></p>
+  </div>
+
   <script src="quotes.js"></script>
   <script src="touchgrass.js"></script>
   <script src="movement.js"></script>
+  <script src="productivity.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>
