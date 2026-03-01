@@ -329,6 +329,7 @@ movementBtn.addEventListener('click', fetchMovement);
 
 // ─── Productivity ────────────────────────────────────────────────
 let lastProdPromptIndex = -1;
+let currentProdPrompt = '';
 
 function getRandomProdPrompt() {
   let index;
@@ -337,20 +338,34 @@ function getRandomProdPrompt() {
   return PRODUCTIVITY_PROMPTS[index];
 }
 
-function showProductivityInput() {
-  prodPrompt.textContent = getRandomProdPrompt();
+function showProductivityInput(prompt = null) {
+  // Use provided prompt or get a new random one
+  currentProdPrompt = prompt || getRandomProdPrompt();
+  prodPrompt.textContent = currentProdPrompt;
   prodInput.value = '';
   prodSubmitBtn.disabled = true;
   document.getElementById('productivity-box').style.display = 'flex';
+  document.getElementById('prod-prompt-picker').style.display = 'none';
   prodGoalCard.style.display = 'none';
   prodCelebration.style.display = 'none';
   prodNextBtn.style.display = 'none';
   prodCaption.textContent = '';
 }
 
+function showPromptPicker() {
+  // Show the choice: same prompt or new one
+  document.getElementById('productivity-box').style.display = 'none';
+  prodGoalCard.style.display = 'none';
+  prodCelebration.style.display = 'none';
+  prodNextBtn.style.display = 'none';
+  document.getElementById('prod-prompt-picker').style.display = 'flex';
+  prodCaption.textContent = '';
+}
+
 function showSavedGoal(goalText) {
   prodGoalText.textContent = goalText;
   document.getElementById('productivity-box').style.display = 'none';
+  document.getElementById('prod-prompt-picker').style.display = 'none';
   prodGoalCard.style.display = 'flex';
   prodCelebration.style.display = 'none';
   prodNextBtn.style.display = 'none';
@@ -381,7 +396,12 @@ prodSubmitBtn.addEventListener('click', () => {
   });
 });
 
-// Mark goal as done
+// Swap to a different prompt
+document.getElementById('prod-swap-btn').addEventListener('click', () => {
+  showProductivityInput();
+});
+
+// Mark goal as done → show prompt picker
 prodDoneBtn.addEventListener('click', () => {
   chrome.storage.local.remove('savedGoal', () => {
     prodGoalCard.style.display = 'none';
@@ -392,15 +412,25 @@ prodDoneBtn.addEventListener('click', () => {
   });
 });
 
-// Clear goal without celebrating
+// Clear goal → show prompt picker
 prodClearBtn.addEventListener('click', () => {
   chrome.storage.local.remove('savedGoal', () => {
-    showProductivityInput();
+    showPromptPicker();
   });
 });
 
-// Set a new goal after celebrating
+// After celebrating, ask same or new prompt
 prodNextBtn.addEventListener('click', () => {
+  showPromptPicker();
+});
+
+// Prompt picker: same prompt
+document.getElementById('prod-same-prompt-btn').addEventListener('click', () => {
+  showProductivityInput(currentProdPrompt);
+});
+
+// Prompt picker: new prompt
+document.getElementById('prod-new-prompt-btn').addEventListener('click', () => {
   showProductivityInput();
 });
 
