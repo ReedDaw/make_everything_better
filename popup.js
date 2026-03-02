@@ -487,3 +487,138 @@ chrome.storage.local.get('lastMode', (result) => {
   else if (saved === 'movement') fetchMovement();
   else if (saved === 'productivity') initProductivity();
 });
+
+// ─── Settings Panel ───────────────────────────────────────────
+const settingsOverlay  = document.getElementById('settings-overlay');
+const settingsOpenBtn  = document.getElementById('settings-open-btn');
+const settingsCloseBtn = document.getElementById('settings-close-btn');
+const reminderList     = document.getElementById('reminder-list');
+const addReminderBtn   = document.getElementById('add-reminder-btn');
+const settingsSaveBtn  = document.getElementById('settings-save-btn');
+const settingsSavedMsg = document.getElementById('settings-saved-msg');
+
+const MODE_OPTIONS = [
+  { value: 'animals',      label: '🐾 Animals' },
+  { value: 'quotes',       label: '✨ Quotes' },
+  { value: 'touchgrass',   label: '🌿 Touch Grass' },
+  { value: 'movement',     label: '🏃 Movement' },
+  { value: 'productivity', label: '🎯 Focus' },
+];
+
+function generateId() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+}
+
+function buildReminderCard(reminder) {
+  const card = document.createElement('div');
+  card.className = 'reminder-card';
+  card.dataset.id = reminder.id;
+
+  // Mode options HTML
+  const modeOptions = MODE_OPTIONS.map(m =>
+    `<option value="${m.value}" ${reminder.mode === m.value ? 'selected' : ''}>${m.label}</option>`
+  ).join('');
+
+  card.innerHTML = `
+    <div class="reminder-card-top">
+      <span class="reminder-card-title">Reminder</span>
+      <div style="display:flex;align-items:center;gap:10px">
+        <label class="toggle-switch">
+          <input type="checkbox" class="reminder-enabled" ${reminder.enabled ? 'checked' : ''}>
+          <span class="toggle-track"></span>
+        </label>
+        <button class="delete-reminder-btn" title="Delete">✕</button>
+      </div>
+    </div>
+    <div class="reminder-card-body">
+      <div class="reminder-row">
+        <label>Mode</label>
+        <select class="settings-select reminder-mode">${modeOptions}</select>
+      </div>
+      <div class="reminder-row">
+        <label>Type</label>
+        <select class="settings-select reminder-type">
+          <option value="interval" ${reminder.type === 'interval' ? 'selected' : ''}>Every X minutes</option>
+          <option value="daily"    ${reminder.type === 'daily'    ? 'selected' : ''}>Daily at a time</option>
+        </select>
+      </div>
+      <div class="reminder-row reminder-interval-row" style="${reminder.type === 'daily' ? 'display:none' : ''}">
+        <label>Every</label>
+        <input type="number" class="settings-input reminder-interval" min="5" max="480"
+          value="${reminder.intervalMinutes || 120}" style="max-width:70px"> 
+        <label>minutes</label>
+      </div>
+      <div class="reminder-row reminder-daily-row" style="${reminder.type !== 'daily' ? 'display:none' : ''}">
+        <label>At</label>
+        <input type="time" class="settings-input reminder-time" value="${reminder.time || '09:00'}">
+      </div>
+    </div>
+  `;
+
+  // Show/hide interval vs daily rows on type change
+  const typeSelect = card.querySelector('.reminder-type');
+  const intervalRow = card.querySelector('.reminder-interval-row');
+  const dailyRow = card.querySelector('.reminder-daily-row');
+  typeSelect.addEventListener('change', () => {
+    intervalRow.style.display = typeSelect.value === 'interval' ? '' : 'none';
+    dailyRow.style.display    = typeSelect.value === 'daily'    ? '' : 'none';
+  });
+
+  // Delete card
+  card.querySelector('.delete-reminder-btn').addEventListener('click', () => {
+    card.remove();
+  });
+
+  return card;
+}
+
+function readRemindersFromDOM() {
+  return Array.from(reminderList.querySelectorAll('.reminder-card')).map(card => ({
+    id:              card.dataset.id,
+    enabled:         card.querySelector('.reminder-enabled').checked,
+    mode:            card.querySelector('.reminder-mode').value,
+    type:            card.querySelector('.reminder-type').value,
+    intervalMinutes: parseInt(card.querySelector('.reminder-interval').value) || 120,
+    time:            card.querySelector('.reminder-time').value || '09:00',
+  }));
+}
+
+function loadSettings() {
+  chrome.storage.local.get('reminders', (result) => {
+    const reminders = result.reminders || [];
+    reminderList.innerHTML = '';
+    reminders.forEach(r => reminderList.appendChild(buildReminderCard(r)));
+  });
+}
+
+settingsOpenBtn.addEventListener('click', () => {
+  loadSettings();
+  settingsSavedMsg.textContent = '';
+  settingsOverlay.classList.add('open');
+});
+
+settingsCloseBtn.addEventListener('click', () => {
+  settingsOverlay.classList.remove('open');
+});
+
+addReminderBtn.addEventListener('click', () => {
+  const newReminder = {
+    id: generateId(),
+    enabled: true,
+    mode: 'movement',
+    type: 'interval',
+    intervalMinutes: 120,
+    time: '09:00',
+  };
+  reminderList.appendChild(buildReminderCard(newReminder));
+});
+
+settingsSaveBtn.addEventListener('click', () => {
+  const reminders = readRemindersFromDOM();
+  chrome.storage.local.set({ reminders }, () => {
+    // Tell background worker to reschedule alarms
+    chrome.runtime.sendMessage({ type: 'RESCHEDULE_ALARMS' });
+    settingsSavedMsg.textContent = '✓ Saved!';
+    setTimeout(() => { settingsSavedMsg.textContent = ''; }, 2500);
+  });
+});

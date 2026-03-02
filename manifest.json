@@ -7,5 +7,8 @@
     "default_popup": "popup.html",
     "default_title": "Make Everything Better"
   },
-  "permissions": ["storage"]
+  "permissions": ["storage", "alarms", "notifications"],
+  "background": {
+    "service_worker": "background.js"
+  }
 }
