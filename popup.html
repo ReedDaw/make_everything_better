@@ -482,9 +482,6 @@
 
     /* Settings gear icon */
     #settings-open-btn {
-      position: absolute;
-      top: 20px;
-      right: 20px;
       background: none;
       border: none;
       font-size: 18px;
@@ -493,22 +490,29 @@
       transition: color 0.15s, transform 0.3s;
       line-height: 1;
       padding: 2px;
+      flex-shrink: 0;
     }
     #settings-open-btn:hover { color: #888; transform: rotate(45deg); }
 
-    /* Make h1 container relative for gear positioning */
+    /* Header row with gear icon */
     .header-row {
       width: 100%;
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: space-between;
       position: relative;
+    }
+
+    /* Spacer to balance gear icon and keep title centered */
+    .header-spacer {
+      width: 28px;
     }
   </style>
 </head>
 <body>
 
   <div class="header-row">
+    <span class="header-spacer"></span>
     <h1>Make Everything Better</h1>
     <button id="settings-open-btn" title="Settings">⚙️</button>
   </div>
@@ -643,7 +647,7 @@
     </div>
 
     <span class="settings-section-title">Break Reminders</span>
-    <p style="font-size:12px;color:#aaa;margin-top:-8px">Get notified to take a break, move, or check in on your goals.</p>
+    <p style="font-size:12px;color:#aaa;margin-top:-8px">Get notified to take a break, move, or check in on your goals. Time is based on your local time zone.</p>
 
     <div class="reminder-list" id="reminder-list">
       <!-- Reminder cards injected by JS -->
