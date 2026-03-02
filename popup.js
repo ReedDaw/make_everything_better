@@ -525,6 +525,12 @@ function showGnError() {
   gnRefreshBtn.disabled     = false;
 }
 
+function sentimentLabel(score) {
+  if (score >= 0.7) return { emoji: '😄', label: 'Very positive' };
+  if (score >= 0.5) return { emoji: '🙂', label: 'Positive' };
+  return { emoji: '🫤', label: 'Somewhat positive' };
+}
+
 function showGnArticle(index) {
   const a = gnArticles[index];
   if (!a) return;
@@ -534,7 +540,22 @@ function showGnArticle(index) {
   gnDesc.textContent  = a.description;
   gnLink.href         = a.url;
   const ago = Math.floor((Date.now() - new Date(a.publishedAt)) / 3600000);
-  gnSource.textContent  = `${a.source} · ${ago < 24 ? ago + 'h ago' : Math.floor(ago/24) + 'd ago'}`;
+  gnSource.textContent = `${a.source} · ${ago < 24 ? ago + 'h ago' : Math.floor(ago/24) + 'd ago'}`;
+
+  // Sentiment indicator
+  const sentimentEl = document.getElementById('gn-sentiment');
+  if (sentimentEl && a.sentiment != null) {
+    const { emoji, label } = sentimentLabel(a.sentiment);
+    const pct = Math.round(a.sentiment * 100);
+    sentimentEl.innerHTML = `
+      <span style="font-size:11px;color:#aaa;font-weight:600">${emoji} ${label} · ${pct}% positivity</span>
+      <div style="background:#f0e8e0;border-radius:50px;height:6px;width:100%;margin-top:4px">
+        <div style="background:#4caf50;height:6px;border-radius:50px;width:${pct}%;transition:width 0.4s ease"></div>
+      </div>
+    `;
+    sentimentEl.style.display = 'block';
+  }
+
   gnCounter.textContent = `${index + 1} of ${gnArticles.length}`;
   gnNextBtn.disabled    = gnArticles.length <= 1;
   gnRefreshBtn.disabled = false;
