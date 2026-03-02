@@ -87,7 +87,7 @@ const animals = {
 const allAnimalKeys = ['dog', 'cat', 'fox', 'lizard'];
 
 // ─── Mode toggle ─────────────────────────────────────────────
-const modeOrder = ['animals', 'quotes', 'touchgrass', 'movement', 'productivity'];
+const modeOrder = ['animals', 'quotes', 'touchgrass', 'movement', 'productivity', 'goodnews'];
 
 function switchMode(mode) {
   currentMode = mode;
@@ -104,6 +104,7 @@ function switchMode(mode) {
   if (mode === 'touchgrass' && grassAction.textContent === '') fetchGrass();
   if (mode === 'movement' && movementAction.textContent === '') fetchMovement();
   if (mode === 'productivity') initProductivity();
+  if (mode === 'goodnews' && !gnLoaded) fetchGoodNews();
 }
 
 modeOptions.forEach(opt => opt.addEventListener('click', () => switchMode(opt.dataset.mode)));
@@ -486,6 +487,91 @@ chrome.storage.local.get('lastMode', (result) => {
   else if (saved === 'touchgrass') fetchGrass();
   else if (saved === 'movement') fetchMovement();
   else if (saved === 'productivity') initProductivity();
+  else if (saved === 'goodnews') fetchGoodNews();
+});
+
+// ─── Good News ───────────────────────────────────────────────────
+const WORKER_URL   = 'https://good-news-proxy.dawdigitalgrowth.workers.dev/';
+const gnContainer  = document.getElementById('gn-container');
+const gnLoading    = document.getElementById('gn-loading');
+const gnError      = document.getElementById('gn-error');
+const gnImage      = document.getElementById('gn-image');
+const gnSource     = document.getElementById('gn-source');
+const gnTitle      = document.getElementById('gn-title');
+const gnDesc       = document.getElementById('gn-desc');
+const gnLink       = document.getElementById('gn-link');
+const gnNextBtn    = document.getElementById('gn-next-btn');
+const gnRefreshBtn = document.getElementById('gn-refresh-btn');
+const gnCounter    = document.getElementById('gn-counter');
+const gnDaysSelect = document.getElementById('gn-days-select');
+
+let gnArticles = [];
+let gnIndex    = 0;
+let gnLoaded   = false;
+
+function showGnLoading() {
+  gnLoading.style.display   = 'flex';
+  gnContainer.style.display = 'none';
+  gnError.style.display     = 'none';
+  gnNextBtn.disabled        = true;
+  gnRefreshBtn.disabled     = true;
+}
+
+function showGnError() {
+  gnLoading.style.display   = 'none';
+  gnContainer.style.display = 'none';
+  gnError.style.display     = 'flex';
+  gnNextBtn.disabled        = true;
+  gnRefreshBtn.disabled     = false;
+}
+
+function showGnArticle(index) {
+  const a = gnArticles[index];
+  if (!a) return;
+  if (a.image) { gnImage.src = a.image; gnImage.style.display = 'block'; }
+  else { gnImage.style.display = 'none'; }
+  gnTitle.textContent = a.title;
+  gnDesc.textContent  = a.description;
+  gnLink.href         = a.url;
+  const ago = Math.floor((Date.now() - new Date(a.publishedAt)) / 3600000);
+  gnSource.textContent  = `${a.source} · ${ago < 24 ? ago + 'h ago' : Math.floor(ago/24) + 'd ago'}`;
+  gnCounter.textContent = `${index + 1} of ${gnArticles.length}`;
+  gnNextBtn.disabled    = gnArticles.length <= 1;
+  gnRefreshBtn.disabled = false;
+  gnLoading.style.display   = 'none';
+  gnError.style.display     = 'none';
+  gnContainer.style.display = 'flex';
+}
+
+async function fetchGoodNews() {
+  showGnLoading();
+  gnLoaded = true;
+  const days = gnDaysSelect ? gnDaysSelect.value : '7';
+  try {
+    const res  = await fetch(`${WORKER_URL}?days=${days}`);
+    const data = await res.json();
+    if (!data.articles || data.articles.length === 0) { showGnError(); return; }
+    gnArticles = data.articles.sort(() => Math.random() - 0.5);
+    gnIndex    = 0;
+    showGnArticle(0);
+  } catch (err) {
+    showGnError();
+  }
+}
+
+gnNextBtn.addEventListener('click', () => {
+  gnIndex = (gnIndex + 1) % gnArticles.length;
+  showGnArticle(gnIndex);
+});
+
+gnRefreshBtn.addEventListener('click', () => {
+  gnLoaded = false;
+  fetchGoodNews();
+});
+
+gnDaysSelect.addEventListener('change', () => {
+  gnLoaded = false;
+  fetchGoodNews();
 });
 
 // ─── Settings Panel ───────────────────────────────────────────
@@ -503,6 +589,7 @@ const MODE_OPTIONS = [
   { value: 'touchgrass',   label: '🌿 Touch Grass' },
   { value: 'movement',     label: '🏃 Movement' },
   { value: 'productivity', label: '🎯 Focus' },
+  { value: 'goodnews', label: '📰 Good News' },
 ];
 
 function generateId() {

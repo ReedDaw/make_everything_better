@@ -524,6 +524,7 @@
     <div class="mode-option" data-mode="touchgrass">🌿 Grass</div>
     <div class="mode-option" data-mode="movement">🏃 Move</div>
     <div class="mode-option" data-mode="productivity">🎯 Focus</div>
+    <div class="mode-option" data-mode="goodnews">📰 News</div>
   </div>
 
   <!-- Animals panel -->
@@ -657,7 +658,50 @@
     <button id="settings-save-btn">Save Settings</button>
     <p id="settings-saved-msg"></p>
   </div>
+  
+<!-- Good News panel -->
+<div class="panel" id="panel-goodnews">
 
+  <!-- Filter row -->
+  <div style="display:flex;align-items:center;justify-content:space-between;width:100%">
+    <span style="font-size:12px;font-weight:600;color:#aaa">Good news from the last</span>
+    <select id="gn-days-select" style="border:2px solid #e8e0d8;border-radius:8px;padding:5px 10px;font-size:12px;color:#333;font-family:inherit;outline:none;background:white;">
+      <option value="1">24 hours</option>
+      <option value="7" selected>7 days</option>
+      <option value="30">30 days</option>
+    </select>
+  </div>
+
+  <!-- Loading state -->
+  <div id="gn-loading" style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:40px 0;width:100%">
+    <span style="font-size:32px">📰</span>
+    <p style="font-size:13px;color:#bbb">Finding good news...</p>
+  </div>
+
+  <!-- Error state -->
+  <div id="gn-error" style="display:none;flex-direction:column;align-items:center;gap:12px;padding:40px 0;width:100%">
+    <span style="font-size:32px">😕</span>
+    <p style="font-size:13px;color:#bbb;text-align:center">Couldn't load news right now.<br>Check your connection.</p>
+  </div>
+
+  <!-- Article card -->
+  <div id="gn-container" style="display:none;flex-direction:column;width:100%;gap:12px;">
+    <img id="gn-image" style="width:100%;height:180px;object-fit:cover;border-radius:14px;display:none;" alt="Article image" />
+    <div style="background:white;border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:8px;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
+      <p id="gn-source" style="font-size:11px;font-weight:700;color:#ff6b6b;letter-spacing:0.5px;text-transform:uppercase;"></p>
+      <p id="gn-title" style="font-size:15px;font-weight:700;color:#333;line-height:1.4;"></p>
+      <p id="gn-desc" style="font-size:13px;color:#777;line-height:1.5;"></p>
+      <a id="gn-link" href="#" target="_blank" style="font-size:12px;font-weight:600;color:#ff6b6b;text-decoration:none;margin-top:4px;">Read full story →</a>
+    </div>
+    <p id="gn-counter" style="font-size:11px;color:#ccc;text-align:center;"></p>
+  </div>
+
+  <div style="display:flex;gap:10px;width:100%">
+    <button class="action-btn" id="gn-next-btn" style="flex:2">📰 Next Story</button>
+    <button id="gn-refresh-btn" style="flex:1;background:white;border:2px solid #e8e0d8;border-radius:50px;padding:12px;font-size:13px;font-weight:600;color:#aaa;cursor:pointer;">↺ Refresh</button>
+  </div>
+  <p class="panel-caption" id="gn-caption">Good things are happening. Here's proof.</p>
+</div>
   <script src="quotes.js"></script>
   <script src="touchgrass.js"></script>
   <script src="movement.js"></script>
