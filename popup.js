@@ -518,6 +518,110 @@ function launchConfetti(canvas) {
   draw();
 }
 
+// ─── Good News ───────────────────────────────────────────────────
+const WORKER_URL   = 'https://good-news-proxy.dawdigitalgrowth.workers.dev/';
+const gnContainer  = document.getElementById('gn-container');
+const gnLoading    = document.getElementById('gn-loading');
+const gnError      = document.getElementById('gn-error');
+const gnImage      = document.getElementById('gn-image');
+const gnSource     = document.getElementById('gn-source');
+const gnTitle      = document.getElementById('gn-title');
+const gnDesc       = document.getElementById('gn-desc');
+const gnLink       = document.getElementById('gn-link');
+const gnNextBtn    = document.getElementById('gn-next-btn');
+const gnRefreshBtn = document.getElementById('gn-refresh-btn');
+const gnCounter    = document.getElementById('gn-counter');
+const gnDaysSelect = document.getElementById('gn-days-select');
+
+let gnArticles = [];
+let gnIndex    = 0;
+let gnLoaded   = false;
+
+function showGnLoading() {
+  gnLoading.style.display   = 'flex';
+  gnContainer.style.display = 'none';
+  gnError.style.display     = 'none';
+  gnNextBtn.disabled        = true;
+  gnRefreshBtn.disabled     = true;
+}
+
+function showGnError() {
+  gnLoading.style.display   = 'none';
+  gnContainer.style.display = 'none';
+  gnError.style.display     = 'flex';
+  gnNextBtn.disabled        = true;
+  gnRefreshBtn.disabled     = false;
+}
+
+function sentimentLabel(score) {
+  if (score >= 0.7) return { emoji: '😄', label: 'Very positive' };
+  if (score >= 0.5) return { emoji: '🙂', label: 'Positive' };
+  return { emoji: '🫤', label: 'Somewhat positive' };
+}
+
+function showGnArticle(index) {
+  const a = gnArticles[index];
+  if (!a) return;
+  if (a.image) { gnImage.src = a.image; gnImage.style.display = 'block'; }
+  else { gnImage.style.display = 'none'; }
+  gnTitle.textContent = a.title;
+  gnDesc.textContent  = a.description;
+  gnLink.href         = a.url;
+  const ago = Math.floor((Date.now() - new Date(a.publishedAt)) / 3600000);
+  gnSource.textContent = `${a.source} · ${ago < 24 ? ago + 'h ago' : Math.floor(ago/24) + 'd ago'}`;
+
+  const sentimentEl = document.getElementById('gn-sentiment');
+  if (sentimentEl && a.sentiment != null) {
+    const { emoji, label } = sentimentLabel(a.sentiment);
+    const pct = Math.round(a.sentiment * 100);
+    sentimentEl.innerHTML = `
+      <span style="font-size:11px;color:#aaa;font-weight:600">${emoji} ${label} · ${pct}% positivity</span>
+      <div style="background:#f0e8e0;border-radius:50px;height:6px;width:100%;margin-top:4px">
+        <div style="background:#4caf50;height:6px;border-radius:50px;width:${pct}%;transition:width 0.4s ease"></div>
+      </div>
+    `;
+    sentimentEl.style.display = 'block';
+  }
+
+  gnCounter.textContent = `${index + 1} of ${gnArticles.length}`;
+  gnNextBtn.disabled    = gnArticles.length <= 1;
+  gnRefreshBtn.disabled = false;
+  gnLoading.style.display   = 'none';
+  gnError.style.display     = 'none';
+  gnContainer.style.display = 'flex';
+}
+
+async function fetchGoodNews() {
+  showGnLoading();
+  gnLoaded = true;
+  const days = gnDaysSelect ? gnDaysSelect.value : '7';
+  try {
+    const res  = await fetch(`${WORKER_URL}?days=${days}`);
+    const data = await res.json();
+    if (!data.articles || data.articles.length === 0) { showGnError(); return; }
+    gnArticles = data.articles.sort(() => Math.random() - 0.5);
+    gnIndex    = 0;
+    showGnArticle(0);
+  } catch (err) {
+    showGnError();
+  }
+}
+
+gnNextBtn.addEventListener('click', () => {
+  gnIndex = (gnIndex + 1) % gnArticles.length;
+  showGnArticle(gnIndex);
+});
+
+gnRefreshBtn.addEventListener('click', () => {
+  gnLoaded = false;
+  fetchGoodNews();
+});
+
+gnDaysSelect.addEventListener('change', () => {
+  gnLoaded = false;
+  fetchGoodNews();
+});
+
 // ─── Init ─────────────────────────────────────────────────────
 chrome.storage.local.get('lastMode', (result) => {
   if (!result.lastMode) {
