@@ -133,8 +133,8 @@ const modeOrder = ['animals', 'quotes', 'touchgrass', 'movement', 'productivity'
 function switchMode(mode) {
   currentMode = mode;
   const idx = modeOrder.indexOf(mode);
+  togglePill.style.width = `calc((100% - 8px) / ${modeOrder.length})`;
   togglePill.style.transform = `translateX(calc(${idx} * 100%))`;
-  togglePill.style.width = `calc(${100 / modeOrder.length}% - 4px)`;
 
   modeOptions.forEach(opt => opt.classList.toggle('active', opt.dataset.mode === mode));
   panels.forEach(panel => panel.classList.toggle('active', panel.id === `panel-${mode}`));
