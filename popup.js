@@ -128,7 +128,7 @@ const animals = {
 const allAnimalKeys = ['dog', 'cat', 'fox', 'lizard'];
 
 // ─── Mode toggle ─────────────────────────────────────────────
-const modeOrder = ['animals', 'quotes', 'touchgrass', 'movement', 'productivity'];
+const modeOrder = ['animals', 'quotes', 'touchgrass', 'movement', 'productivity', 'goodnews'];
 
 function switchMode(mode) {
   currentMode = mode;
