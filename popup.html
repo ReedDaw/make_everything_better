@@ -573,6 +573,9 @@
       color: #aaa;
       line-height: 1.4;
     }
+    /* Hover link utility */
+    .hover-coral { color: #ccc; text-decoration: none; transition: color 0.15s; }
+    .hover-coral:hover { color: #ff6b6b; }
   </style>
 </head>
 <body>
@@ -756,7 +759,7 @@
     <a href="https://support.google.com/chrome/answer/3220216?hl=en&co=GENIE.Platform%3DDesktop"
        target="_blank"
        style="font-size:11px;color:#bbb;text-align:center;text-decoration:none;padding-top:4px;transition:color 0.15s;"
-       onmouseover="this.style.color='#ff6b6b'" onmouseout="this.style.color='#bbb'">
+       class="hover-coral">
       🔔 <u>Make sure Chrome notifications are enabled</u>
     </a>
 
@@ -770,7 +773,7 @@
     <footer style="width:100%;text-align:center;padding:4px 0 2px;">
       <a href="https://www.make-everything-better.com/" target="_blank"
          style="font-size:11px;color:#ccc;text-decoration:none;transition:color 0.15s;"
-         onmouseover="this.style.color='#ff6b6b'" onmouseout="this.style.color='#ccc'">
+         class="hover-coral">
         A project by <u>make-everything-better.com</u>
       </a>
     </footer>
@@ -825,7 +828,7 @@
   <footer style="width:100%;text-align:center;padding:4px 0 2px;">
     <a href="https://www.make-everything-better.com/" target="_blank"
        style="font-size:11px;color:#ccc;text-decoration:none;transition:color 0.15s;"
-       onmouseover="this.style.color='#ff6b6b'" onmouseout="this.style.color='#ccc'">
+       class="hover-coral">
       A project by <u>make-everything-better.com</u>
     </a>
   </footer>
