@@ -562,20 +562,27 @@ function sentimentLabel(score) {
 function showGnArticle(index) {
   const a = gnArticles[index];
   if (!a) return;
+
   if (a.image) { gnImage.src = a.image; gnImage.style.display = 'block'; }
   else { gnImage.style.display = 'none'; }
+
   gnTitle.textContent = a.title;
   gnDesc.textContent  = a.description;
   gnLink.href         = a.url;
-  const ago = Math.floor((Date.now() - new Date(a.publishedAt)) / 3600000);
-  gnSource.textContent = `${a.source} · ${ago < 24 ? ago + 'h ago' : Math.floor(ago/24) + 'd ago'}`;
 
+  const ago = Math.floor((Date.now() - new Date(a.publishedAt)) / 3600000);
+  const timeStr = ago < 24 ? `${ago}h ago` : `${Math.floor(ago / 24)}d ago`;
+  const upvotes = a.upvotes > 1000
+    ? `${(a.upvotes / 1000).toFixed(1)}k upvotes`
+    : `${a.upvotes} upvotes`;
+  gnSource.textContent = `${a.source} · ${timeStr} · ⬆️ ${upvotes}`;
+
+  // Replace sentiment bar with upvote ratio bar
   const sentimentEl = document.getElementById('gn-sentiment');
-  if (sentimentEl && a.sentiment != null) {
-    const { emoji, label } = sentimentLabel(a.sentiment);
-    const pct = Math.round(a.sentiment * 100);
+  if (sentimentEl && a.upvoteRatio != null) {
+    const pct = Math.round(a.upvoteRatio * 100);
     sentimentEl.innerHTML = `
-      <span style="font-size:11px;color:#aaa;font-weight:600">${emoji} ${label} · ${pct}% positivity</span>
+      <span style="font-size:11px;color:#aaa;font-weight:600">⬆️ ${pct}% upvoted on r/UpliftingNews</span>
       <div style="background:#f0e8e0;border-radius:50px;height:6px;width:100%;margin-top:4px">
         <div style="background:#4caf50;height:6px;border-radius:50px;width:${pct}%;transition:width 0.4s ease"></div>
       </div>
@@ -583,9 +590,9 @@ function showGnArticle(index) {
     sentimentEl.style.display = 'block';
   }
 
-  gnCounter.textContent = `${index + 1} of ${gnArticles.length}`;
-  gnNextBtn.disabled    = gnArticles.length <= 1;
-  gnRefreshBtn.disabled = false;
+  gnCounter.textContent     = `${index + 1} of ${gnArticles.length}`;
+  gnNextBtn.disabled        = gnArticles.length <= 1;
+  gnRefreshBtn.disabled     = false;
   gnLoading.style.display   = 'none';
   gnError.style.display     = 'none';
   gnContainer.style.display = 'flex';
